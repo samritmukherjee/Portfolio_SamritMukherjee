@@ -19,11 +19,11 @@ export const SOCIALS = {
 export const OS_DATA = {
   macos: {
     wallpaper: '/wallpapers/macos-ventura.jpg',
-    font: '-apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif',
+    font: 'SF Pro Display, -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif',
   },
   windows: {
     wallpaper: '/wallpapers/windows-11.jpg',
-    font: '"Segoe UI", system-ui, sans-serif',
+    font: 'Segoe UI Variable Display, Segoe UI, system-ui, sans-serif',
   }
 };
 //

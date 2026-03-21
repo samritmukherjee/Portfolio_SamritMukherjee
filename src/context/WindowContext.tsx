@@ -11,6 +11,7 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [zIndexCounter, setZIndexCounter] = useState(10);
+  const [closedApps, setClosedApps] = useState<Set<string>>(new Set());
 
   const clearWindows = useCallback(() => {
     setWindows([]);
@@ -18,6 +19,13 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const openWindow = useCallback((appId: string) => {
+    // Remove if it was in closedApps since user is manually opening it now
+    setClosedApps(prev => {
+      const next = new Set(prev);
+      next.delete(appId);
+      return next;
+    });
+
     // Check if app already has an open window
     const existing = windows.find(w => w.appId === appId);
     if (existing) {
@@ -33,6 +41,17 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
     }
 
     const newId = `${appId}-${Date.now()}`;
+    
+    // Improved default sizes based on app type - increased width
+    let defaultSize = { width: 700, height: 450 };
+    if (appId === 'about') defaultSize = { width: 900, height: 550 };
+    if (appId === 'projects') defaultSize = { width: 1000, height: 620 };
+    if (appId === 'terminal') defaultSize = { width: 800, height: 450 };
+    if (appId === 'skills') defaultSize = { width: 900, height: 550 };
+    if (appId === 'contact') defaultSize = { width: 850, height: 580 };
+    if (appId === 'ai-chat') defaultSize = { width: 800, height: 600 };
+    if (appId === 'resume') defaultSize = { width: 950, height: 700 };
+
     const newWindow: WindowState = {
       id: newId,
       appId,
@@ -40,9 +59,11 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       isMinimized: false,
       isMaximized: false,
       zIndex: zIndexCounter + 1,
-      // Desktop-focused initial size/position
-      position: { x: 100 + windows.length * 30, y: 80 + windows.length * 30 },
-      size: { width: 600, height: 450 }
+      position: { 
+        x: Math.min(100 + windows.length * 30, globalThis.window?.innerWidth - 500 || 100),
+        y: Math.min(80 + windows.length * 30, (globalThis.window?.innerHeight || 600) - 500) 
+      },
+      size: defaultSize
     };
 
     setWindows(prev => [...prev, newWindow]);
@@ -50,27 +71,28 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
     setZIndexCounter(prev => prev + 1);
   }, [windows, zIndexCounter]);
 
-  // Handle OS transitions: Clear windows and then reopen About
+  // Handle OS transitions: Re-align windows if necessary
   useEffect(() => {
-    // Only clear if there are actually windows to clear
-    if (windows.length > 0) {
-      clearWindows();
+    // We only open 'about' by default if it hasn't been manually closed by the user
+    if (windows.length === 0 && !closedApps.has('about')) {
+      const timer = setTimeout(() => {
+          openWindow('about');
+      }, 500);
+      return () => clearTimeout(timer);
     }
-    
-    // Smooth delay for "Landing" after OS switch to ensure state has settled
-    const timer = setTimeout(() => {
-        openWindow('about');
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [os, mobileOS]); // Trigger on any OS switch
+  }, [os, mobileOS, windows.length, openWindow, closedApps]);
 
   const closeWindow = useCallback((windowId: string) => {
+    const win = windows.find(w => w.id === windowId);
+    if (win) {
+      setClosedApps(prev => new Set(prev).add(win.appId));
+    }
+    
     setWindows(prev => prev.filter(w => w.id !== windowId));
     if (activeWindowId === windowId) {
       setActiveWindowId(null);
     }
-  }, [activeWindowId]);
+  }, [activeWindowId, windows]);
 
   const focusWindow = useCallback((windowId: string) => {
     setActiveWindowId(windowId);

@@ -49,23 +49,26 @@ export default function MobileShell() {
       </div>
 
       {/* App Grid */}
-      <div className="flex-1 px-6 pt-8 overflow-y-auto z-40">
-        <div className="grid grid-cols-4 gap-y-10 gap-x-6">
-          {APPS.map((app) => {
+      <div className="flex-1 px-8 pt-12 overflow-y-auto z-40 custom-scrollbar">
+        <div className="grid grid-cols-4 gap-y-12 gap-x-8">
+          {APPS.map((app, idx) => {
             const Icon = Icons[app.icon as keyof typeof Icons] as any;
             return (
               <motion.button
                 key={app.id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.03 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => openWindow(app.id)}
-                className="flex flex-col items-center gap-2 group"
+                className="flex flex-col items-center gap-2 group relative"
               >
                 <div 
-                  className={`w-16 h-16 flex items-center justify-center shadow-xl transition-all duration-300 ${isIos ? 'rounded-[1.4rem] bg-gradient-to-b from-white/20 to-white/5 border border-white/20 backdrop-blur-xl' : 'rounded-2xl bg-[#1e1e1e] border-2 border-white/5 group-active:border-blue-500/50'}`}
+                  className={`w-[4.2rem] h-[4.2rem] flex items-center justify-center shadow-2xl transition-all duration-300 ${isIos ? 'rounded-[1.4rem] bg-gradient-to-b from-white/20 to-white/5 border border-white/20 backdrop-blur-2xl shadow-black/40' : 'rounded-2xl bg-[#1e1e1e] border-2 border-white/5 group-active:border-blue-500/50'}`}
                 >
-                   {Icon && <Icon size={32} strokeWidth={1.5} className={isIos ? "text-white/90" : "text-blue-400"} />}
+                   {Icon && <Icon size={32} strokeWidth={1.5} className={isIos ? "text-white/95" : "text-blue-400"} />}
                 </div>
-                <span className={`text-[11px] font-medium text-white/70 whitespace-nowrap overflow-hidden text-ellipsis w-16 text-center ${!isIos && 'uppercase tracking-widest text-[9px]'}`}>
+                <span className={`text-[10px] font-semibold text-white/80 whitespace-nowrap overflow-hidden text-ellipsis w-20 text-center ${!isIos && 'uppercase tracking-tighter text-[9px] font-bold text-white/60'}`}>
                   {app.name}
                 </span>
               </motion.button>
@@ -74,31 +77,32 @@ export default function MobileShell() {
         </div>
       </div>
 
-      {/* Bottom Bar / Nav Area */}
-      <div className="h-24 flex flex-col items-center justify-center z-50 px-6 pb-2 shrink-0">
-        {/* Dock icons or Quick Switch */}
-        <div className="w-full flex justify-between items-center mb-6">
+      {/* Bottom Nav / Quick Switch */}
+      <div className="h-32 flex flex-col items-center justify-end z-50 px-8 pb-10 shrink-0">
+        <div className="w-full flex justify-center items-center mb-8">
              <button 
                 onClick={toggleMobileOS}
-                className={`flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/10 backdrop-blur-xl transition-all active:scale-95 ${isIos ? 'bg-white/10 text-white' : 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'}`}
+                className={`flex items-center gap-3 px-6 py-3 rounded-full border transition-all active:scale-95 shadow-2xl ${isIos ? 'bg-white/10 text-white border-white/10 backdrop-blur-3xl' : 'bg-blue-600 text-white border-blue-500 shadow-blue-500/20'}`}
              >
                 <Icons.RefreshCw size={16} className={isIos ? "text-white/60" : "text-white"} />
-                <span className="text-[12px] font-bold uppercase tracking-widest">
-                    Switch to {isIos ? 'Android' : 'iOS'}
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">
+                    {isIos ? 'Android' : 'iOS'} Mode
                 </span>
              </button>
         </div>
 
-        {/* Home Indicators */}
-        {isIos ? (
-            <div className="w-32 h-1.5 bg-white/30 rounded-full mb-2" />
-        ) : (
-            <div className="flex gap-12 text-white/40 mb-2">
-                <Icons.ChevronLeft size={24} />
-                <Icons.Circle size={18} className="mt-1" />
-                <Icons.Square size={18} className="mt-1" />
-            </div>
-        )}
+        {/* Home Indicator */}
+        <div className="relative w-full flex justify-center">
+            {isIos ? (
+                <div className="w-36 h-1.5 bg-white/40 rounded-full shadow-lg" />
+            ) : (
+                <div className="flex gap-16 text-white/40 items-center">
+                    <Icons.ChevronLeft size={24} />
+                    <Icons.Circle size={18} />
+                    <Icons.Square size={16} />
+                </div>
+            )}
+        </div>
       </div>
 
       {/* OS Specific Overlays/Vibes */}

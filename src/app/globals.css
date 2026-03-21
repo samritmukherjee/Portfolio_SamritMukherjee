@@ -9,16 +9,23 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shell-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5), 0 18px 36px -18px rgba(0, 0, 0, 0.5);
+  --window-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.6), 0 30px 60px -30px rgba(0, 0, 0, 0.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.transition-none {
+  transition: none !important;
 }
+
+.interaction-mode {
+  user-select: none !important;
+  pointer-events: none !important;
+}
+
 
 @layer utilities {
   .glass {
@@ -57,10 +64,27 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-sans);
+  font-family: var(--font-inter);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   height: 100vh;
   width: 100vw;
+}
+
+/* Custom Utilities for Humanized Feel */
+.shadow-soft {
+  box-shadow: var(--window-shadow);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .glass-morphism {
@@ -91,12 +115,202 @@ body {
   letter-spacing: normal;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Enhanced Resize Handles - OS-like behavior */
+.resize-handle-br, .resize-handle-bl, .resize-handle-tr, .resize-handle-tl, .resize-handle-r, .resize-handle-l, .resize-handle-t, .resize-handle-b {
+  position: absolute;
+  z-index: 100;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+/* Corner Resize Handles - Larger grab area with visual feedback */
+.resize-handle-br { 
+  cursor: nwse-resize; 
+  width: 24px; 
+  height: 24px; 
+  bottom: -2px; 
+  right: -2px;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.resize-handle-br::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: rgba(59, 130, 246, 0.6);
+  border-radius: 1px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.resize-handle-bl { 
+  cursor: nesw-resize; 
+  width: 24px; 
+  height: 24px; 
+  bottom: -2px; 
+  left: -2px;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+  border-radius: 2px;
+  opacity: 0;
+}
+
+.resize-handle-tr { 
+  cursor: nesw-resize; 
+  width: 24px; 
+  height: 24px; 
+  top: -2px; 
+  right: -2px;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+  border-radius: 2px;
+  opacity: 0;
+}
+
+.resize-handle-tl { 
+  cursor: nwse-resize; 
+  width: 24px; 
+  height: 24px; 
+  top: -2px; 
+  left: -2px;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+  border-radius: 2px;
+  opacity: 0;
+}
+
+/* Edge Resize Handles - Full edge coverage */
+.resize-handle-r { 
+  cursor: ew-resize; 
+  width: 8px; 
+  height: 100%; 
+  top: 0; 
+  right: -4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.resize-handle-l { 
+  cursor: ew-resize; 
+  width: 8px; 
+  height: 100%; 
+  top: 0; 
+  left: -4px;
+  opacity: 0;
+}
+
+.resize-handle-t { 
+  cursor: ns-resize; 
+  width: 100%; 
+  height: 8px; 
+  top: -4px; 
+  left: 0;
+  opacity: 0;
+}
+
+.resize-handle-b { 
+  cursor: ns-resize; 
+  width: 100%; 
+  height: 8px; 
+  bottom: -4px; 
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show resize handles on hover - makes them discoverable */
+[class*="rounded-2xl"]:hover .resize-handle-br,
+[class*="rounded-2xl"]:hover .resize-handle-bl,
+[class*="rounded-2xl"]:hover .resize-handle-tr,
+[class*="rounded-2xl"]:hover .resize-handle-tl,
+[class*="rounded-2xl"]:hover .resize-handle-r,
+[class*="rounded-2xl"]:hover .resize-handle-l,
+[class*="rounded-2xl"]:hover .resize-handle-t,
+[class*="rounded-2xl"]:hover .resize-handle-b {
+  opacity: 1;
+}
+
+/* Active resize state - visual feedback */
+[class*="rounded-2xl"]:active .resize-handle-br::after {
+  opacity: 1;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+/* OS Fonts */
+[class*="font-macos"], [class*="font-ios"] {
+  font-family: SF Pro Display, -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif !important;
+  letter-spacing: -0.015em;
+}
+
+[class*="font-windows"], [class*="font-android"] {
+  font-family: "Segoe UI Variable Display", "Segoe UI", "Roboto", system-ui, sans-serif !important;
+  letter-spacing: 0;
+}
+
+/* Premium Animations */
+@keyframes windowOpen {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.window-open {
+  animation: windowOpen 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth resize interactions */
+@keyframes resizeGlow {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 0 8px 2px rgba(59, 130, 246, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+/* Enhanced resize affordance on hover */
+.group:hover .resize-handle-br::after {
+  animation: resizeGlow 1.5s ease-out infinite;
+}
+
+/* Edge resize handles - expanded hit area */
+.resize-handle-r:hover,
+.resize-handle-l:hover,
+.resize-handle-t:hover,
+.resize-handle-b:hover {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+
+/* Corner resize handles - prominent on hover */
+.resize-handle-br:hover,
+.resize-handle-bl:hover,
+.resize-handle-tr:hover,
+.resize-handle-tl:hover {
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0.2) 70%);
+  box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Windows system - make corner resize more visible */
+.rounded-sm:hover .resize-handle-br {
+  opacity: 0.9;
+}
+
+/* macOS system - subtle resize handles */
+.rounded-2xl:hover .resize-handle-br {
+  opacity: 0.7;
+}
+
+/* Active resize state - strong visual feedback */
+.resize-handle-br:active,
+.resize-handle-bl:active,
+.resize-handle-tr:active,
+.resize-handle-tl:active {
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.3) 70%) !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6), inset 0 0 8px rgba(59, 130, 246, 0.4) !important;
+}
+
+.resize-handle-r:active,
+.resize-handle-l:active,
+.resize-handle-t:active,
+.resize-handle-b:active {
+  background-color: rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5) !important;
 }

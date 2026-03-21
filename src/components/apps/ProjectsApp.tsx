@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import { ExternalLink, Code, Globe, Sparkles } from 'lucide-react';
-import * as Icons from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const projects = [
@@ -12,7 +10,7 @@ const projects = [
     description: 'AI-powered design platform that generates fully editable layered visuals. Bridging the gap between AI creativity and human customization.',
     link: 'https://cosmic-canvas-delta.vercel.app/',
     tags: ['AI', 'Canvas API', 'Next.js', 'Framer Motion'],
-    icon: Sparkles,
+    image: '/wallpapers/Cosmic canvas logo.png',
   },
   {
     id: 2,
@@ -20,60 +18,59 @@ const projects = [
     description: 'AI-based solution designed to deliver intelligent and user-focused functionality. Focus on usability, automation, and smart interaction.',
     link: 'https://sukalya-ai.vercel.app/',
     tags: ['AI', 'Automation', 'FullStack', 'TypeScript'],
-    icon: Code,
+    image: '/wallpapers/sukalya.jpeg',
   }
 ];
 
 export default function ProjectsApp() {
   return (
-    <div className="p-6 text-white grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    <div className="p-4 md:p-8 text-white space-y-4 max-w-5xl mx-auto w-full overflow-x-hidden">
       {projects.map((project, idx) => (
-        <motion.div
+        <motion.a
            key={project.id}
-           initial={{ y: 20, opacity: 0 }}
-           animate={{ y: 0, opacity: 1 }}
-           transition={{ delay: idx * 0.1 }}
-           className="group relative bg-[#1c1c1c] rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-300 shadow-xl"
+           href={project.link}
+           target="_blank"
+           rel="noopener noreferrer"
+           initial={{ x: -20, opacity: 0 }}
+           animate={{ x: 0, opacity: 1 }}
+           transition={{ 
+             duration: 0.4, 
+             delay: idx * 0.1,
+             ease: [0.16, 1, 0.3, 1]
+           }}
+           className="group relative block w-full"
         >
-            <motion.div
-              key={project.id}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="group relative bg-[#1c1c1e] rounded-2xl border border-white/[0.05] overflow-hidden shadow-2xl hover:border-blue-500/30 transition-all duration-500"
-            >
-              <div className="aspect-video bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-transparent flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
-                <project.icon size={48} className="text-blue-400/50 group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute top-3 right-3 flex gap-2">
-                   {project.tags.slice(0, 2).map(tag => (
-                     <span key={tag} className="text-[10px] bg-white/5 backdrop-blur-md px-2 py-1 rounded-full border border-white/10 text-white/50">{tag}</span>
-                   ))}
-                </div>
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 p-4 md:p-6 bg-gradient-to-r from-white/[0.03] to-transparent rounded-xl border border-white/[0.08] hover:border-blue-500/40 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-transparent transition-all duration-300 cursor-pointer">
+              {/* Logo/Image */}
+              <div className="flex-shrink-0 p-3 rounded-lg bg-white/5 group-hover:bg-blue-500/20 transition-all duration-300 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover rounded"
+                />
               </div>
               
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{project.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed mb-6 line-clamp-2">
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base md:text-lg font-black text-white mb-2 group-hover:text-blue-400 transition-colors">{project.title}</h3>
+                <p className="text-white/50 text-xs md:text-sm leading-relaxed line-clamp-2 font-medium group-hover:text-white/70 transition-colors">
                   {project.description}
                 </p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-1.5">
-                    {project.tags.slice(2, 4).map(tag => (
-                      <span key={tag} className="text-[10px] text-blue-300/60 font-medium uppercase tracking-wider">{tag}</span>
-                    ))}
-                  </div>
-                  <a 
-                    href={project.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="p-2.5 bg-white/5 rounded-full hover:bg-blue-600 hover:text-white transition-all border border-white/10"
-                  >
-                    <Icons.ExternalLink size={16} />
-                  </a>
+              </div>
+              
+              {/* Tags & Link */}
+              <div className="flex-shrink-0 flex flex-col items-center md:items-end gap-2 md:gap-3">
+                <div className="flex gap-2 flex-wrap justify-center md:justify-end">
+                  {project.tags.map(tag => (
+                    <span key={tag} className="text-[10px] text-blue-400/80 font-black uppercase tracking-widest bg-blue-900/20 px-2.5 py-1 rounded-full border border-blue-500/20 group-hover:border-blue-500/40 transition-all">{tag}</span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 text-blue-400 group-hover:text-cyan-300 transition-colors">
+                  <span className="text-[11px] font-bold uppercase tracking-widest">Open →</span>
                 </div>
               </div>
-            </motion.div>
-        </motion.div>
+            </div>
+        </motion.a>
       ))}
     </div>
   );

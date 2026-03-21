@@ -23,44 +23,41 @@ export default function Dock() {
           return (
             <motion.div
               key={app.id}
-              whileHover={{ scale: 1.25, marginBottom: 16 }}
-              whileTap={{ scale: 0.95 }}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              whileHover={{ 
+                scale: 1.2, 
+                y: -12,
+                transition: { type: "spring", stiffness: 300, damping: 15 }
+              }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => openWindow(app.id)}
               className="relative group cursor-pointer flex flex-col items-center"
             >
-              <div className="w-14 h-14 flex items-center justify-center bg-gradient-to-b from-white/20 to-transparent rounded-[14px] border border-white/20 text-white shadow-lg transition-shadow group-hover:shadow-blue-500/20">
+              <div className="w-14 h-14 flex items-center justify-center bg-gradient-to-b from-white/10 to-transparent rounded-[14px] border border-white/20 text-white shadow-xl transition-all duration-300 group-hover:border-white/40 group-hover:shadow-blue-500/10 group-active:scale-90">
                 {IconComponent && React.createElement(IconComponent as any, { 
-                    size: 30, 
-                    strokeWidth: 1.5 
+                    size: 28, 
+                    strokeWidth: 1.5,
+                    className: "group-hover:text-blue-400 transition-colors"
                 })}
               </div>
               
               <AnimatePresence>
                 {windows.some(w => w.appId === app.id) && (
                    <motion.div 
+                    layoutId={`indicator-${app.id}`}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full shadow-[0_0_5px_white]" 
+                    className="absolute -bottom-2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_white]" 
                    />
                 )}
               </AnimatePresence>
               
-              {/* Window Preview / Tooltip */}
-              <div className="absolute -top-32 left-1/2 -translate-x-1/2 px-0 py-0 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none translate-y-4 group-hover:translate-y-0 z-50">
-                {windows.some(w => w.appId === app.id) ? (
-                    <div className="flex flex-col items-center gap-2">
-                         <div className="w-32 h-20 bg-black/40 backdrop-blur-xl border border-white/20 rounded-lg overflow-hidden flex items-center justify-center shadow-2xl">
-                            <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">{app.name}</span>
-                         </div>
-                         <div className="px-2 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] rounded-md border border-white/10">
-                            {app.name}
-                        </div>
-                    </div>
-                ) : (
-                    <div className="px-2 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] rounded-md border border-white/10">
-                        {app.name}
-                    </div>
-                )}
+              {/* Tooltip */}
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none translate-y-2 group-hover:translate-y-0 z-50">
+                  <div className="px-3 py-1.5 bg-black/80 backdrop-blur-xl text-white text-[11px] font-semibold rounded-lg border border-white/10 shadow-2xl whitespace-nowrap">
+                      {app.name}
+                  </div>
               </div>
             </motion.div>
           );
