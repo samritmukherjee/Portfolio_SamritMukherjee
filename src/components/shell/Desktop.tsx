@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useOS } from '@/context/OSContext';
 import { useWindows } from '@/context/WindowContext';
 import MenuBar from './MenuBar';
@@ -8,97 +8,97 @@ import Taskbar from './Taskbar';
 import Dock from './Dock';
 import WindowContainer from '../window/WindowContainer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { APPS } from '@/constants';
-import * as Icons from 'lucide-react';
+import MobileShell from './MobileShell';
+import BootScreen from './BootScreen';
 
 export default function Desktop() {
-  const { os, wallpaper, toggleOS } = useOS();
-  const { openWindow, clearWindows } = useWindows();
+  const { os, mobileOS, toggleOS } = useOS();
+  const { clearWindows } = useWindows();
+  const [isMobile, setIsMobile] = useState(false);
+  const [isBooting, setIsBooting] = useState(true);
 
-  const handleToggleOS = () => {
-    clearWindows();
-    toggleOS();
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Determine wallpaper based on OS and device
+  const getWallpaper = () => {
+    if (isMobile) {
+      return mobileOS === 'ios' 
+        ? 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop' 
+        : 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop';
+    }
+    return os === 'macos'
+      ? '/wallpapers/macos-ventura.jpg'
+      : '/wallpapers/windows-11.jpg';
   };
 
+  const wallpaper = getWallpaper();
+
   return (
-    <main className="relative w-screen h-screen overflow-hidden select-none">
-        {/* Wallpaper with Noise Texture */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={wallpaper}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${wallpaper})` }}
-          >
-             {/* Micro-noise texture for premium feel */}
-             <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-             <div className="absolute inset-0 bg-black/10 backdrop-brightness-[0.9]" />
-          </motion.div>
-        </AnimatePresence>
-
-      {/* OS Shell Components (Desktop Only) */}
-      <div className="hidden md:block h-full w-full relative">
-        {os === 'macos' ? (
-          <>
-            <MenuBar />
-            <div className="absolute inset-0 z-[20]">
-              <WindowContainer />
-            </div>
-            <Dock />
-          </>
+    <div className="relative w-screen h-screen overflow-hidden select-none bg-black">
+      <AnimatePresence mode="wait">
+        {isBooting ? (
+          <BootScreen key="boot" onFinish={() => setIsBooting(false)} />
         ) : (
-          <>
-            <div className="absolute inset-0 z-[20]">
+          <motion.div
+            key="os-root"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="relative w-full h-full"
+          >
+            {/* Wallpaper Layer */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={wallpaper}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${wallpaper})` }}
+              >
+                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                 <div className="absolute inset-0 bg-black/10 backdrop-brightness-[0.9]" />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Desktop Shell Layer (Persistent Background Elements) */}
+            {!isMobile && (
+              <div className="h-full w-full absolute inset-0 z-40 pointer-events-none">
+                <div className="w-full h-full relative pointer-events-auto">
+                    {os === 'macos' ? (
+                      <>
+                        <MenuBar />
+                        <Dock />
+                      </>
+                    ) : (
+                      <>
+                        <Taskbar />
+                      </>
+                    )}
+                </div>
+              </div>
+            )}
+
+            {/* Global Window Layer (TOP LAYER) */}
+            <div className="fixed inset-0 z-[110] pointer-events-none">
               <WindowContainer />
             </div>
-            <Taskbar />
-          </>
+
+            {/* Mobile Shell Layer */}
+            {isMobile && (
+              <div className="absolute inset-0 z-30">
+                <MobileShell />
+              </div>
+            )}
+          </motion.div>
         )}
-      </div>
-
-      {/* Mobile App Grid (Hidden on Desktop) */}
-      <div className="md:hidden fixed inset-0 z-[30] bg-black/40 backdrop-blur-md p-8 pt-24 overflow-y-auto">
-        <div className="grid grid-cols-3 gap-6 sm:gap-10">
-            {APPS.map((app) => {
-              const Icon = Icons[app.icon as keyof typeof Icons] as any;
-              return (
-                <button
-                  key={app.id}
-                  onClick={() => openWindow(app.id)}
-                  className="flex flex-col items-center gap-4 transition-transform active:scale-90 touch-manipulation"
-                >
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-br from-white/20 to-white/5 rounded-3xl border border-white/20 shadow-2xl backdrop-blur-xl">
-                     {Icon && <Icon size={32} strokeWidth={1.5} className="text-white opacity-90" />}
-                  </div>
-                  <span className="text-[11px] font-bold text-white/80 text-center tracking-wide uppercase">{app.name}</span>
-                </button>
-              );
-            })}
-        </div>
-        
-        {/* Mobile OS Switcher */}
-        <button 
-          onClick={handleToggleOS}
-          className="fixed bottom-10 right-10 w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center border border-white/30 text-white shadow-[0_0_30px_rgba(37,99,235,0.5)] z-[100] active:scale-90 transition-transform"
-        >
-           <Icons.RefreshCw size={24} />
-        </button>
-      </div>
-
-      {/* Global Window Container for Mobile (Full Screen Overlay) */}
-      <div className="md:hidden fixed inset-0 z-[40] pointer-events-none">
-          <div className="w-full h-full pointer-events-auto">
-             <WindowContainer />
-          </div>
-      </div>
-
-      {/* Desktop Icons (Optional, mostly for visual flair) */}
-      <div className="absolute top-12 right-4 flex flex-col gap-6 z-10 pointer-events-none md:pointer-events-auto">
-        {/* We can add quick access icons here later */}
-      </div>
-    </main>
+      </AnimatePresence>
+    </div>
   );
 }

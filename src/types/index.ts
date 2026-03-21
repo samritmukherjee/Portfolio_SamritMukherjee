@@ -1,4 +1,5 @@
 export type OSType = 'macos' | 'windows';
+export type MobileOSType = 'ios' | 'android';
 
 export interface AppConfig {
   id: string;
@@ -21,7 +22,9 @@ export interface WindowState {
 
 export interface OSContextType {
   os: OSType;
+  mobileOS: MobileOSType;
   toggleOS: () => void;
+  toggleMobileOS: () => void;
   wallpaper: string;
   setWallpaper: (wp: string) => void;
 }

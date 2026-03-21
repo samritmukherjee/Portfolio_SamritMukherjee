@@ -1,14 +1,21 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { useOS } from '@/context/OSContext';
 import { WindowState, WindowContextType } from '@/types';
 
 const WindowContext = createContext<WindowContextType | undefined>(undefined);
 
 export function WindowProvider({ children }: { children: React.ReactNode }) {
+  const { os, mobileOS } = useOS();
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [zIndexCounter, setZIndexCounter] = useState(10);
+
+  const clearWindows = useCallback(() => {
+    setWindows([]);
+    setActiveWindowId(null);
+  }, []);
 
   const openWindow = useCallback((appId: string) => {
     // Check if app already has an open window
@@ -33,8 +40,9 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       isMinimized: false,
       isMaximized: false,
       zIndex: zIndexCounter + 1,
-      position: { x: 100 + windows.length * 20, y: 100 + windows.length * 20 },
-      size: { width: 640, height: 480 }
+      // Desktop-focused initial size/position
+      position: { x: 100 + windows.length * 30, y: 80 + windows.length * 30 },
+      size: { width: 600, height: 450 }
     };
 
     setWindows(prev => [...prev, newWindow]);
@@ -42,10 +50,20 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
     setZIndexCounter(prev => prev + 1);
   }, [windows, zIndexCounter]);
 
-  const clearWindows = useCallback(() => {
-    setWindows([]);
-    setActiveWindowId(null);
-  }, []);
+  // Handle OS transitions: Clear windows and then reopen About
+  useEffect(() => {
+    // Only clear if there are actually windows to clear
+    if (windows.length > 0) {
+      clearWindows();
+    }
+    
+    // Smooth delay for "Landing" after OS switch to ensure state has settled
+    const timer = setTimeout(() => {
+        openWindow('about');
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [os, mobileOS]); // Trigger on any OS switch
 
   const closeWindow = useCallback((windowId: string) => {
     setWindows(prev => prev.filter(w => w.id !== windowId));

@@ -81,13 +81,13 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.font-macos {
+.font-macos, .font-ios {
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif;
   letter-spacing: -0.01em;
 }
 
-.font-windows {
-  font-family: "Segoe UI", system-ui, sans-serif;
+.font-windows, .font-android {
+  font-family: "Segoe UI", "Roboto", system-ui, sans-serif;
   letter-spacing: normal;
 }
 

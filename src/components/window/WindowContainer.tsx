@@ -28,17 +28,16 @@ export default function WindowContainer() {
   const { windows } = useWindows();
 
   return (
-    <div className="relative w-full h-full pointer-events-none">
+    <div className="relative w-full h-full pointer-events-none overflow-hidden">
       <AnimatePresence>
         {windows.map((window) => {
+          // We only hide minimized windows, but we KEEP them in the map if they are "open"
+          // so that AnimatePresence can handle the exit animation when they are actually CLOSED.
           if (!window.isOpen || window.isMinimized) return null;
 
           return (
             <WindowFrame key={window.id} window={window}>
               <Suspense fallback={<div className="flex items-center justify-center h-full text-white/50">Loading...</div>}>
-                {/* Dynamically get the app component based on its name in constant */}
-                {/* For simplicity we use the component name from types */}
-                {/* We map appId to component name if needed, but here we'll just check appId */}
                 {renderAppComponent(window.appId)}
               </Suspense>
             </WindowFrame>
