@@ -13,7 +13,7 @@ interface WindowFrameProps {
 }
 
 export default function WindowFrame({ window, children }: WindowFrameProps) {
-  const { activeWindowId, focusWindow, closeWindow, minimizeWindow, maximizeWindow, updateWindowPosition } = useWindows();
+  const { activeWindowId, focusWindow, closeWindow, minimizeWindow, maximizeWindow, updateWindowPosition, updateWindowSize } = useWindows();
   const { os } = useOS();
   const controls = useDragControls();
   const isActive = activeWindowId === window.id;
@@ -30,10 +30,10 @@ export default function WindowFrame({ window, children }: WindowFrameProps) {
       animate={{ 
         scale: 1, 
         opacity: 1,
-        x: window.isMaximized ? 0 : window.position.x,
-        y: window.isMaximized ? (isMac ? 28 : 0) : window.position.y,
-        width: window.isMaximized ? '100vw' : window.size.width,
-        height: window.isMaximized ? (isMac ? 'calc(100vh - 28px)' : 'calc(100vh - 48px)') : window.size.height,
+        x: (window.isMaximized || os === 'macos') ? (os === 'macos' && !window.isMaximized ? window.position.x : 0) : window.position.x,
+        y: (window.isMaximized || typeof window.position.y === 'string') ? (isMac ? 32 : 0) : window.position.y,
+        width: (window.isMaximized || typeof window.size.width === 'string' || os === 'macos' ? '100vw' : window.size.width) as any,
+        height: (window.isMaximized || typeof window.size.height === 'string' || os === 'macos' ? (isMac ? 'calc(100vh - 32px)' : 'calc(100vh - 56px)') : window.size.height) as any,
         zIndex: window.zIndex
       }}
       exit={{ scale: 0.9, opacity: 0 }}
@@ -48,71 +48,106 @@ export default function WindowFrame({ window, children }: WindowFrameProps) {
       {/* Title Bar */}
       <div 
         onPointerDown={(e) => controls.start(e)}
-        className={`h-10 flex items-center shrink-0 cursor-default px-4 relative ${isMac ? 'justify-start' : 'justify-between'}`}
+        className={`h-11 flex items-center shrink-0 cursor-default px-4 relative select-none ${isMac ? 'justify-start' : 'justify-between bg-white/[0.03]'}`}
       >
         {isMac ? (
-          <div className="flex gap-2">
+          <div className="flex gap-2.5 z-20">
             <button
-               onClick={() => closeWindow(window.id)}
-               className="w-3 h-3 rounded-full bg-[#ff5f57] flex items-center justify-center group"
+               onClick={(e) => { e.stopPropagation(); closeWindow(window.id); }}
+               className="w-3.5 h-3.5 rounded-full bg-[#ff5f57] flex items-center justify-center group transition-colors hover:bg-[#ff4b42]"
             >
                 <X size={8} className="text-black/60 opacity-0 group-hover:opacity-100" />
             </button>
             <button
-               onClick={() => minimizeWindow(window.id)}
-               className="w-3 h-3 rounded-full bg-[#ffbd2e] flex items-center justify-center group"
+               onClick={(e) => { e.stopPropagation(); minimizeWindow(window.id); }}
+               className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] flex items-center justify-center group transition-colors hover:bg-[#ffad1a]"
             >
-                <Minus size={8} className="text-black/60 opacity-0 group-hover:opacity-100" />
+                <Minus size={10} className="text-black/60 opacity-0 group-hover:opacity-100" />
             </button>
             <button
-                onClick={() => maximizeWindow(window.id)}
-                className="w-3 h-3 rounded-full bg-[#28c840] flex items-center justify-center group"
+                onClick={(e) => { e.stopPropagation(); maximizeWindow(window.id); }}
+                className="w-3.5 h-3.5 rounded-full bg-[#28c840] flex items-center justify-center group transition-colors hover:bg-[#24b038]"
             >
-                <Maximize2 size={6} className="text-black/60 opacity-0 group-hover:opacity-100" />
+                <Maximize2 size={8} className="text-black/60 opacity-0 group-hover:opacity-100" />
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-white/80 uppercase tracking-tighter ml-1">
-              {window.appId.replace('-', ' ')}
+            <div className={`w-4 h-4 rounded-sm flex items-center justify-center ${isActive ? 'bg-[#0078d4]' : 'bg-white/10'}`}>
+                {/* Small indicator icon for Windows */}
+            </div>
+            <span className="text-[11px] font-semibold text-white/90 tracking-wide ml-1">
+              {window.appId.toUpperCase()}
             </span>
           </div>
         )}
 
         {isMac && (
-            <div className="absolute left-1/2 -translate-x-1/2 text-[12px] font-semibold text-white/90">
-                {window.appId.charAt(0).toUpperCase() + window.appId.slice(1).replace('-', ' ')}
+            <div className="absolute left-1/2 -translate-x-1/2 text-[13px] font-medium text-white/70">
+                {window.appId.charAt(0).toUpperCase() + window.appId.slice(1)}
             </div>
         )}
 
         {!isMac && (
-          <div className="flex h-full">
+          <div className="flex h-full -mr-4">
             <button
-               onClick={() => minimizeWindow(window.id)}
-               className="w-10 h-full flex items-center justify-center hover:bg-white/10 transition-colors"
+               onClick={(e) => { e.stopPropagation(); minimizeWindow(window.id); }}
+               className="w-12 h-full flex items-center justify-center hover:bg-white/10 transition-colors"
             >
-                <Minus size={14} className="text-white/80" />
+                <Minus size={16} className="text-white/80" />
             </button>
             <button
-                onClick={() => maximizeWindow(window.id)}
-                className="w-10 h-full flex items-center justify-center hover:bg-white/10 transition-colors"
+                onClick={(e) => { e.stopPropagation(); maximizeWindow(window.id); }}
+                className="w-12 h-full flex items-center justify-center hover:bg-white/10 transition-colors"
             >
-                <Square size={10} className="text-white/80" />
+                <Square size={11} className="text-white/80" />
             </button>
             <button
-                onClick={() => closeWindow(window.id)}
+                onClick={(e) => { e.stopPropagation(); closeWindow(window.id); }}
                 className="w-12 h-full flex items-center justify-center hover:bg-[#e81123] transition-colors"
             >
-                <X size={16} className="text-white/80" />
+                <X size={18} className="text-white/80" />
             </button>
           </div>
         )}
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-auto bg-black/10">
+      <div className="flex-1 overflow-auto bg-black/5 relative">
         {children}
       </div>
+
+      {/* Resize Handle */}
+      {!window.isMaximized && (
+        <div 
+          className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize z-40 group"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const startWidth = typeof window.size.width === 'number' ? window.size.width : 640;
+            const startHeight = typeof window.size.height === 'number' ? window.size.height : 480;
+
+            const onMouseMove = (moveEvent: MouseEvent) => {
+              const newWidth = Math.max(400, startWidth + (moveEvent.clientX - startX));
+              const newHeight = Math.max(300, startHeight + (moveEvent.clientY - startY));
+              updateWindowSize(window.id, newWidth, newHeight);
+            };
+
+            const onMouseUp = () => {
+              document.removeEventListener('mousemove', onMouseMove);
+              document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          }}
+        >
+          <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-r-2 border-b-2 border-white/20 group-hover:border-white/40 transition-colors rounded-[1px]" />
+        </div>
+      )}
     </motion.div>
   );
 }

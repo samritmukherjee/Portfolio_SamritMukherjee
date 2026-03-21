@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { FileText, Download, ExternalLink, Eye } from 'lucide-react';
+import { FileText, Download, Eye } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ResumeApp() {
@@ -23,23 +24,26 @@ export default function ResumeApp() {
         </div>
       </div>
 
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-[#1c1c1c]">
         <motion.div
-           initial={{ scale: 0.95, opacity: 0 }}
+           initial={{ scale: 0.98, opacity: 0 }}
            animate={{ scale: 1, opacity: 1 }}
-           className="max-w-3xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden min-h-[1000px] relative group"
+           className="max-w-4xl mx-auto h-[1200px] bg-white rounded-lg shadow-2xl overflow-hidden relative shadow-blue-500/10"
         >
-          {/* PDF Placeholder or Actual Viewer */}
           <iframe 
-            src="/resume.pdf" 
+            src="/resume.pdf#view=FitH" 
             className="w-full h-full border-none"
             title="Samrit Mukherjee Resume"
           />
-          
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-             <div className="bg-white text-black p-4 rounded-full shadow-xl flex items-center gap-2 font-bold">
-                <Eye size={20} /> Previewing PDF
-             </div>
+          <div className="absolute bottom-4 right-4 z-10">
+             <a 
+               href="/resume.pdf" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               className="bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black transition-all border border-white/10 shadow-xl"
+             >
+                <Icons.ExternalLink size={16} /> Open in New Tab
+             </a>
           </div>
         </motion.div>
       </div>

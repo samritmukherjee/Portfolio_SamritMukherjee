@@ -3,11 +3,12 @@
 import React from 'react';
 import { useOS } from '@/context/OSContext';
 import { useWindows } from '@/context/WindowContext';
-import { Apple, Wifi, Battery, Search, Command } from 'lucide-react';
-import { format } from 'date-fns'; // I should check if date-fns is installed, if not I'll use native Date
+import * as Icons from 'lucide-react';
+import { Apple, Wifi, Battery, Search } from 'lucide-react';
 
 export default function MenuBar() {
-  const { os } = useOS();
+  const { os, toggleOS } = useOS();
+  const { clearWindows } = useWindows();
   const [time, setTime] = React.useState(new Date());
 
   React.useEffect(() => {
@@ -20,24 +21,43 @@ export default function MenuBar() {
   const menuItems = ['File', 'Edit', 'View', 'Go', 'Window', 'Help'];
 
   return (
-    <div className="absolute top-0 left-0 right-0 h-7 bg-white/30 backdrop-blur-md flex items-center justify-between px-4 text-xs font-medium text-white z-50 border-b border-white/10">
-      <div className="flex items-center gap-4">
-        <Apple size={14} fill="currentColor" className="hover:opacity-70 cursor-default" />
-        <span className="font-bold cursor-default hover:text-white/80">Samrit OS</span>
-        {menuItems.map((item) => (
-          <span key={item} className="hidden md:inline cursor-default hover:bg-white/10 px-2 py-0.5 rounded transition-colors text-white/90">
-            {item}
-          </span>
-        ))}
+    <div className="fixed top-0 left-0 right-0 h-10 bg-black/20 backdrop-blur-3xl flex items-center justify-between px-4 text-[13px] font-medium text-white/95 z-[100] border-b border-white/[0.05] select-none">
+      <div className="flex items-center gap-1">
+        <div 
+          className="p-1 px-2.5 hover:bg-white/10 rounded-md transition-colors duration-200 cursor-default opacity-80"
+        >
+            <Apple size={16} fill="currentColor" />
+        </div>
+        <span className="font-bold px-2.5 cursor-default shrink-0">Samrit OS</span>
+        <div className="hidden lg:flex items-center">
+            {menuItems.map((item) => (
+              <span key={item} className="cursor-default hover:bg-white/10 px-3 py-1 rounded-md transition-colors duration-200 text-white/80">
+                {item}
+              </span>
+            ))}
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <Wifi size={14} className="cursor-default" />
-        <Battery size={14} className="cursor-default" />
-        <Search size={14} className="cursor-default" />
-        <div className="flex items-center gap-1 cursor-default">
-          <span>{time.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-          <span>{time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+      <div className="flex items-center gap-2 pr-1">
+        <button 
+          onClick={() => {
+            clearWindows();
+            toggleOS(); 
+          }}
+          className="flex items-center gap-2 px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full transition-all text-white/90 border border-white/10 text-[11px]"
+        >
+            <Icons.Monitor size={14} />
+            <span>Switch to {os === 'macos' ? 'Windows' : 'macOS'}</span>
+        </button>
+        <div className="hidden md:flex items-center gap-4 px-3 border-l border-white/10 ml-2">
+            <Wifi size={14} className="opacity-70" />
+            <Battery size={14} className="opacity-70" />
+            <Search size={14} className="opacity-70" />
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 hover:bg-white/10 rounded-md transition-colors duration-200 cursor-default tabular-nums">
+          <span className="hidden sm:inline text-white/60">{time.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+          <span className="hidden sm:inline text-white/60">{time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+          <span className="font-bold tracking-tight">{time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</span>
         </div>
       </div>
     </div>

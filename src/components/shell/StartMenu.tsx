@@ -11,50 +11,45 @@ export default function StartMenu({ onClose }: { onClose: () => void }) {
 
   return (
     <motion.div
-      initial={{ y: 500, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: 500, opacity: 0 }}
-      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="absolute bottom-14 left-1/2 -translate-x-1/2 w-[550px] h-[600px] bg-[#1c1c1c]/95 backdrop-blur-3xl border border-white/10 rounded-xl p-8 z-40 text-white shadow-2xl overflow-hidden"
+      initial={{ y: 300, opacity: 0, scale: 0.95 }}
+      animate={{ y: 0, opacity: 1, scale: 1 }}
+      exit={{ y: 300, opacity: 0, scale: 0.95 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      className="absolute bottom-16 left-1/2 -translate-x-1/2 w-[520px] max-w-[95vw] bg-[#1c1c1c]/80 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden z-[100]"
     >
-      <div className="flex flex-col h-full">
-        <div className="flex justify-between items-center mb-8">
-          <h3 className="text-sm font-semibold opacity-80">Pinned Apps</h3>
-          <button className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded transition-colors">All apps &gt;</button>
+      <div className="p-8 flex-1">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-[13px] font-bold text-white tracking-wide">Pinned</h2>
+          <button className="text-[11px] bg-white/5 px-2.5 py-1 rounded border border-white/5 hover:bg-white/10 transition-colors text-white/70 font-medium">All apps &gt;</button>
         </div>
 
-        <div className="grid grid-cols-6 gap-y-10 mb-auto">
+        <div className="grid grid-cols-6 gap-x-2 gap-y-6">
           {APPS.map((app) => {
-            // @ts-ignore
-            const IconComponent = Icons[app.icon as keyof typeof Icons];
-            
+            const Icon = Icons[app.icon as keyof typeof Icons] as any;
             return (
               <button
                 key={app.id}
-                onClick={() => {
-                  openWindow(app.id);
-                  onClose();
-                }}
-                className="flex flex-col items-center gap-2 group"
+                onClick={() => { openWindow(app.id); onClose(); }}
+                className="flex flex-col items-center gap-2 group transition-all"
               >
-                <div className="w-10 h-10 flex items-center justify-center bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors">
-                   {IconComponent && <IconComponent size={24} />}
+                <div className="w-10 h-10 flex items-center justify-center p-2 rounded-lg bg-gradient-to-br from-white/10 to-transparent border border-white/5 group-hover:scale-110 transition-transform group-active:scale-95 shadow-lg group-hover:shadow-blue-500/20">
+                  {Icon && <Icon size={24} strokeWidth={1.5} className="text-white opacity-90" />}
                 </div>
-                <span className="text-[11px] text-center opacity-90 group-hover:opacity-100">{app.name}</span>
+                <span className="text-[11px] text-white/80 group-hover:text-white transition-colors">{app.name}</span>
               </button>
             );
           })}
         </div>
+      </div>
 
-        <div className="mt-8 pt-8 border-t border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-500 overflow-hidden">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Samrit" alt="Samrit" />
-                </div>
-                <span className="text-xs font-semibold">Samrit Mukherjee</span>
-            </div>
-            <Icons.Power size={14} className="opacity-60 hover:opacity-100 cursor-pointer" />
+      <div className="h-16 bg-black/40 backdrop-blur-md px-8 flex items-center justify-between border-t border-white/[0.05]">
+        <div className="flex items-center gap-3 group cursor-pointer hover:bg-white/5 p-2 pr-4 rounded-lg transition-colors">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xs font-bold shadow-lg ring-1 ring-white/20">SM</div>
+          <span className="text-[12px] font-semibold text-white/90">Samrit Mukherjee</span>
         </div>
+        <button className="p-2.5 hover:bg-white/10 rounded-lg transition-colors group">
+          <Icons.Power size={18} className="text-white/60 group-hover:text-[#ff5f57] transition-colors" />
+        </button>
       </div>
     </motion.div>
   );

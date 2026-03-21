@@ -1,68 +1,63 @@
 'use client';
 
 import React from 'react';
-import { Mail, Github, Linkedin, Send, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { SOCIALS } from '@/constants';
+import { Github, Linkedin, Mail, Send, Twitter, ExternalLink } from 'lucide-react';
+
+const SOCIALS = [
+  { name: 'GitHub', icon: Github, link: 'https://github.com/samritmukherjee', color: 'hover:text-white hover:bg-zinc-800' },
+  { name: 'LinkedIn', icon: Linkedin, link: 'https://www.linkedin.com/in/samrit-mukherjee-412788318/', color: 'hover:text-blue-400 hover:bg-blue-400/10' },
+  { name: 'Twitter', icon: Twitter, link: '#', color: 'hover:text-sky-400 hover:bg-sky-400/10' },
+  { name: 'Email', icon: Mail, link: 'mailto:samrit.mukherjee@example.com', color: 'hover:text-red-400 hover:bg-red-400/10' },
+];
 
 export default function ContactApp() {
   return (
-    <div className="p-10 text-white flex flex-col items-center justify-center h-full max-w-lg mx-auto text-center font-sans">
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="mb-8 w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl rotate-3"
+    <div className="p-6 md:p-12 h-full flex flex-col items-center justify-center text-white max-w-4xl mx-auto space-y-12 overflow-y-auto scrollbar-hide">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-center space-y-4"
       >
-        <Mail size={40} />
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent">Let's Build Something Great</h1>
+        <p className="text-white/50 text-lg max-w-xl mx-auto">Open for collaborations, interesting projects, or just a friendly hello. Reach out through any of these channels.</p>
       </motion.div>
 
-      <h2 className="text-3xl font-bold mb-4 tracking-tight">Let's build something impactful</h2>
-      <p className="text-white/60 mb-10 leading-relaxed italic">
-         I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
-      </p>
-
-      <div className="grid grid-cols-1 gap-4 w-full mb-10">
-        <a
-          href={SOCIALS.linkedin}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center justify-between p-4 bg-[#0077b5]/10 border border-[#0077b5]/30 rounded-xl hover:bg-[#0077b5]/20 transition-all group"
-        >
-          <div className="flex items-center gap-4">
-            <Linkedin className="text-[#0077b5]" />
-            <span className="font-semibold underline decoration-transparent group-hover:decoration-blue-400 decoration-2 underline-offset-4 transition-all">LinkedIn</span>
-          </div>
-          <ExternalLink size={16} className="opacity-40 group-hover:opacity-100" />
-        </a>
-
-        <a
-          href={SOCIALS.github}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all group"
-        >
-          <div className="flex items-center gap-4">
-            <Github />
-            <span className="font-semibold underline decoration-transparent group-hover:decoration-gray-400 decoration-2 underline-offset-4 transition-all">GitHub</span>
-          </div>
-          <ExternalLink size={16} className="opacity-40 group-hover:opacity-100" />
-        </a>
-
-        <a
-          href={SOCIALS.email}
-          className="flex items-center justify-between p-4 bg-blue-600/10 border border-blue-600/30 rounded-xl hover:bg-blue-600/20 transition-all group"
-        >
-          <div className="flex items-center gap-4">
-            <Mail className="text-blue-500" />
-            <span className="font-semibold underline decoration-transparent group-hover:decoration-blue-500 decoration-2 underline-offset-4 transition-all">Email Me</span>
-          </div>
-          <Send size={16} className="opacity-40 group-hover:opacity-100" />
-        </a>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+        {SOCIALS.map((social, idx) => (
+          <motion.a
+            key={social.name}
+            href={social.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: idx * 0.1 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            className={`flex flex-col items-center gap-4 p-8 bg-white/[0.03] border border-white/[0.05] rounded-3xl transition-all duration-300 ${social.color} group shadow-2xl`}
+          >
+            <div className="p-4 rounded-2xl bg-white/5 group-hover:bg-transparent group-hover:scale-110 transition-all">
+              <social.icon size={32} strokeWidth={1.5} />
+            </div>
+            <span className="text-sm font-bold tracking-widest uppercase opacity-40 group-hover:opacity-100 transition-opacity">{social.name}</span>
+          </motion.a>
+        ))}
       </div>
 
-      <p className="text-[10px] uppercase font-bold tracking-[0.2em] opacity-30 italic">
-        Based in India • Available for collaborations
-      </p>
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-2xl p-8 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-3xl border border-white/[0.05] backdrop-blur-3xl flex flex-col md:flex-row items-center justify-between gap-6 ring-1 ring-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+      >
+        <div className="space-y-1 text-center md:text-left">
+          <h3 className="text-xl font-bold">Have a specific inquiry?</h3>
+          <p className="text-white/40 text-sm">Drop a direct message, I'll get back as soon as possible.</p>
+        </div>
+        <button className="px-8 py-4 bg-white text-black font-black rounded-2xl flex items-center gap-3 hover:bg-blue-500 hover:text-white transition-all shadow-xl active:scale-95">
+          <Send size={18} /> SEND MESSAGE
+        </button>
+      </motion.div>
     </div>
   );
 }

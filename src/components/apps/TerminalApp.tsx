@@ -27,16 +27,14 @@ export default function TerminalApp() {
     
     if (!cmd) return;
 
-    const newHistory = [...history, `samrit@portfolio:~$ ${input}`];
-    
     if (cmd === 'clear') {
       setHistory([]);
-    } else if (COMMANDS[cmd as keyof typeof COMMANDS]) {
-      newHistory.push(COMMANDS[cmd as keyof typeof COMMANDS]);
-      setHistory(newHistory);
     } else {
-      newHistory.push(`Command not found: ${cmd}. Type "help" for a list of commands.`);
-      setHistory(newHistory);
+      let response = `Command not found: ${cmd}. Type "help" for a list of commands.`;
+      if (COMMANDS[cmd as keyof typeof COMMANDS]) {
+        response = COMMANDS[cmd as keyof typeof COMMANDS];
+      }
+      setHistory(prev => [...prev, `samrit@portfolio:~$ ${input}`, response]);
     }
     
     setInput('');

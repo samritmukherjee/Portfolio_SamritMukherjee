@@ -28,7 +28,7 @@ export default function WindowContainer() {
   const { windows } = useWindows();
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full pointer-events-none">
       <AnimatePresence>
         {windows.map((window) => {
           if (!window.isOpen || window.isMinimized) return null;

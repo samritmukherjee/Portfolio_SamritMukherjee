@@ -14,10 +14,14 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
     // Check if app already has an open window
     const existing = windows.find(w => w.appId === appId);
     if (existing) {
-      focusWindow(existing.id);
-      if (existing.isMinimized) {
-        setWindows(prev => prev.map(w => w.id === existing.id ? { ...w, isMinimized: false } : w));
-      }
+      // If it exists, un-minimize it and bring it to front
+      setWindows(prev => prev.map(w => 
+        w.id === existing.id 
+          ? { ...w, isMinimized: false, zIndex: zIndexCounter + 1 } 
+          : w
+      ));
+      setActiveWindowId(existing.id);
+      setZIndexCounter(prev => prev + 1);
       return;
     }
 
@@ -30,13 +34,18 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       isMaximized: false,
       zIndex: zIndexCounter + 1,
       position: { x: 100 + windows.length * 20, y: 100 + windows.length * 20 },
-      size: { width: 800, height: 600 }
+      size: { width: 640, height: 480 }
     };
 
     setWindows(prev => [...prev, newWindow]);
     setActiveWindowId(newId);
     setZIndexCounter(prev => prev + 1);
   }, [windows, zIndexCounter]);
+
+  const clearWindows = useCallback(() => {
+    setWindows([]);
+    setActiveWindowId(null);
+  }, []);
 
   const closeWindow = useCallback((windowId: string) => {
     setWindows(prev => prev.filter(w => w.id !== windowId));
@@ -79,6 +88,7 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       minimizeWindow, 
       maximizeWindow, 
       focusWindow,
+      clearWindows,
       updateWindowPosition,
       updateWindowSize
     }}>
