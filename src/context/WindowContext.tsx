@@ -18,6 +18,13 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
     setActiveWindowId(null);
   }, []);
 
+  const resetForNewOS = useCallback(() => {
+    setWindows([]);
+    setActiveWindowId(null);
+    setClosedApps(new Set()); // Reset closed apps so 'about' opens by default
+    setZIndexCounter(10);
+  }, []);
+
   const openWindow = useCallback((appId: string) => {
     // Remove if it was in closedApps since user is manually opening it now
     setClosedApps(prev => {
@@ -129,6 +136,7 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       maximizeWindow, 
       focusWindow,
       clearWindows,
+      resetForNewOS,
       updateWindowPosition,
       updateWindowSize
     }}>

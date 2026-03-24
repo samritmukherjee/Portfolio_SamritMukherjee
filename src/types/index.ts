@@ -38,6 +38,7 @@ export interface WindowContextType {
   maximizeWindow: (windowId: string) => void;
   focusWindow: (windowId: string) => void;
   clearWindows: () => void;
+  resetForNewOS: () => void;
   updateWindowPosition: (windowId: string, x: number, y: number) => void;
   updateWindowSize: (windowId: string, width: number | string, height: number | string) => void;
 }

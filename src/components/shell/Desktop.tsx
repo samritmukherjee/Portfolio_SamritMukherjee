@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useOS } from '@/context/OSContext';
 import { useWindows } from '@/context/WindowContext';
 import MenuBar from './MenuBar';
@@ -13,9 +13,10 @@ import BootScreen from './BootScreen';
 
 export default function Desktop() {
   const { os, mobileOS, toggleOS } = useOS();
-  const { clearWindows } = useWindows();
+  const { clearWindows, resetForNewOS } = useWindows();
   const [isMobile, setIsMobile] = useState(false);
   const [isBooting, setIsBooting] = useState(true);
+  const previousOSRef = useRef<string | null>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -23,6 +24,16 @@ export default function Desktop() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Detect OS changes and trigger boot animation
+  useEffect(() => {
+    if (previousOSRef.current && previousOSRef.current !== os) {
+      // OS has changed, trigger boot animation
+      setIsBooting(true);
+      resetForNewOS(); // Clear all windows for fresh start
+    }
+    previousOSRef.current = os;
+  }, [os, resetForNewOS]);
 
   // Determine wallpaper based on OS and device
   const getWallpaper = () => {
@@ -42,7 +53,7 @@ export default function Desktop() {
     <div className="relative w-screen h-screen overflow-hidden select-none bg-black">
       <AnimatePresence mode="wait">
         {isBooting ? (
-          <BootScreen key="boot" onFinish={() => setIsBooting(false)} />
+          <BootScreen key={`boot-${os}`} os={os} onFinish={() => setIsBooting(false)} />
         ) : (
           <motion.div
             key="os-root"
