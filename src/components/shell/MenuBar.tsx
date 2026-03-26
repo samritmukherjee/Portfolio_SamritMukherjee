@@ -4,7 +4,6 @@ import React from 'react';
 import { useOS } from '@/context/OSContext';
 import { useWindows } from '@/context/WindowContext';
 import * as Icons from 'lucide-react';
-import { Apple, Wifi, Battery, Search } from 'lucide-react';
 
 export default function MenuBar() {
   const { os, toggleOS } = useOS();
@@ -26,7 +25,7 @@ export default function MenuBar() {
         <div 
           className="p-1 px-2.5 hover:bg-white/10 rounded-md transition-colors duration-200 cursor-default opacity-80"
         >
-            <Apple size={16} fill="currentColor" />
+            <Icons.Apple size={16} fill="currentColor" />
         </div>
         <span className="font-bold px-2.5 cursor-default shrink-0">Samrit OS</span>
         <div className="hidden lg:flex items-center">
@@ -50,9 +49,9 @@ export default function MenuBar() {
             <span>Switch to {os === 'macos' ? 'Windows' : 'macOS'}</span>
         </button>
         <div className="hidden md:flex items-center gap-4 px-3 border-l border-white/10 ml-2">
-            <Wifi size={14} className="opacity-70" />
-            <Battery size={14} className="opacity-70" />
-            <Search size={14} className="opacity-70" />
+            <Icons.Wifi size={14} className="opacity-70" />
+            <Icons.Battery size={14} className="opacity-70" />
+            <Icons.Search size={14} className="opacity-70" />
         </div>
         <div className="flex items-center gap-2 px-3 py-1 hover:bg-white/10 rounded-md transition-colors duration-200 cursor-default tabular-nums">
           <span className="hidden sm:inline text-white/60">{time.toLocaleDateString('en-US', { weekday: 'short' })}</span>

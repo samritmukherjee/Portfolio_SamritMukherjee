@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FileText, Download, Eye } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ResumeApp() {
@@ -35,16 +34,6 @@ export default function ResumeApp() {
             className="w-full h-full border-none"
             title="Samrit Mukherjee Resume"
           />
-          <div className="absolute bottom-4 right-4 z-10">
-             <a 
-               href="/resume.pdf" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className="bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black transition-all border border-white/10 shadow-xl"
-             >
-                <Icons.ExternalLink size={16} /> Open in New Tab
-             </a>
-          </div>
         </motion.div>
       </div>
 

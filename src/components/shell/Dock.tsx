@@ -17,7 +17,6 @@ export default function Dock() {
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 px-2 flex items-end">
       <div className="flex items-end gap-3 px-3 py-2.5 bg-white/[0.1] backdrop-blur-2xl border border-white/[0.15] rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-300 hover:bg-white/[0.15]">
         {APPS.map((app) => {
-          // @ts-ignore
           const IconComponent = Icons[app.icon as keyof typeof Icons];
           
           return (

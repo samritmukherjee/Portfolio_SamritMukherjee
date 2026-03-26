@@ -13,17 +13,6 @@ export const APPS: AppConfig[] = [
 export const SOCIALS = {
   github: 'https://github.com/samritmukherjee',
   linkedin: 'https://www.linkedin.com/in/samrit-mukherjee-412788318/',
-  email: 'mailto:samrit.mukherjee@example.com', // Placeholder email
+  email: 'mailto:samritmukherjee05@gmail.com',
 };
 
-export const OS_DATA = {
-  macos: {
-    wallpaper: '/wallpapers/macos-ventura.jpg',
-    font: 'SF Pro Display, -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif',
-  },
-  windows: {
-    wallpaper: '/wallpapers/windows-11.jpg',
-    font: 'Segoe UI Variable Display, Segoe UI, system-ui, sans-serif',
-  }
-};
-//

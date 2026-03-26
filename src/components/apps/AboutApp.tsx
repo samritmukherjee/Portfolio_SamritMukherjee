@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Terminal } from 'lucide-react';
 
 export default function AboutApp() {
   const stats = [
-    { label: 'Hackathons Participated', value: '7', icon: 'Trophy' },
-    { label: 'Hackathons Won', value: '3', icon: 'Award' },
+    { label: 'Hackathons Participated', value: '7' },
+    { label: 'Hackathons Won', value: '3' },
   ];
 
   const accomplishments = [
@@ -95,7 +94,7 @@ export default function AboutApp() {
                             <p className="text-4xl font-black tracking-tighter text-white group-hover:text-blue-400 transition-colors">{stat.value}</p>
                         </div>
                         <div className="p-4 rounded-2xl bg-white/[0.02] text-white/20 group-hover:scale-110 transition-transform">
-                             <Terminal size={24} />
+                             📊
                         </div>
                     </motion.div>
                 ))}

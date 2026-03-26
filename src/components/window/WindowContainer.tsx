@@ -14,25 +14,31 @@ const TerminalApp = lazy(() => import('../apps/TerminalApp'));
 const ResumeApp = lazy(() => import('../apps/ResumeApp'));
 const ContactApp = lazy(() => import('../apps/ContactApp'));
 
-const APP_COMPONENTS: Record<string, React.ReactNode> = {
-  AboutApp: <AboutApp />,
-  ProjectsApp: <ProjectsApp />,
-  SkillsApp: <SkillsApp />,
-  AIChatApp: <AIChatApp />,
-  TerminalApp: <TerminalApp />,
-  ResumeApp: <ResumeApp />,
-  ContactApp: <ContactApp />,
+const APP_COMPONENTS: Record<string, React.LazyExoticComponent<React.FC>> = {
+  about: AboutApp,
+  projects: ProjectsApp,
+  skills: SkillsApp,
+  'ai-chat': AIChatApp,
+  terminal: TerminalApp,
+  resume: ResumeApp,
+  contact: ContactApp,
 };
 
 export default function WindowContainer() {
   const { windows } = useWindows();
 
+  const renderAppComponent = (appId: string) => {
+    const AppComponent = APP_COMPONENTS[appId];
+    if (!AppComponent) {
+      return <div className="p-4 text-white/50">App not found: {appId}</div>;
+    }
+    return <AppComponent />;
+  };
+
   return (
     <div className="relative w-full h-full pointer-events-none overflow-hidden">
       <AnimatePresence>
         {windows.map((window) => {
-          // We only hide minimized windows, but we KEEP them in the map if they are "open"
-          // so that AnimatePresence can handle the exit animation when they are actually CLOSED.
           if (!window.isOpen || window.isMinimized) return null;
 
           return (
@@ -46,17 +52,4 @@ export default function WindowContainer() {
       </AnimatePresence>
     </div>
   );
-}
-
-function renderAppComponent(appId: string) {
-    switch (appId) {
-        case 'about': return <AboutApp />;
-        case 'projects': return <ProjectsApp />;
-        case 'skills': return <SkillsApp />;
-        case 'ai-chat': return <AIChatApp />;
-        case 'terminal': return <TerminalApp />;
-        case 'resume': return <ResumeApp />;
-        case 'contact': return <ContactApp />;
-        default: return <div className="p-4">App not found: {appId}</div>;
-    }
 }

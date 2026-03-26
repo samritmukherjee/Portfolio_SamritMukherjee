@@ -2,12 +2,20 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
+import { SOCIALS } from '@/constants';
 
-const SOCIALS = [
-  { name: 'GitHub', icon: Github, link: 'https://github.com/samritmukherjee', color: 'hover:text-white hover:bg-zinc-800' },
-  { name: 'LinkedIn', icon: Linkedin, link: 'https://www.linkedin.com/in/samrit-mukherjee-412788318/', color: 'hover:text-blue-400 hover:bg-blue-400/10' },
-  { name: 'Email', icon: Mail, link: 'mailto:samritmukherjee05@gmail.com', color: 'hover:text-red-400 hover:bg-red-400/10' },
+interface SocialLink {
+  name: string;
+  icon: React.ComponentType<{ size: number; className?: string }>;
+  link: string;
+  color: string;
+}
+
+const socialLinks: SocialLink[] = [
+  { name: 'GitHub', icon: Github, link: SOCIALS.github, color: 'hover:text-white hover:bg-zinc-800' },
+  { name: 'LinkedIn', icon: Linkedin, link: SOCIALS.linkedin, color: 'hover:text-blue-400 hover:bg-blue-400/10' },
+  { name: 'Email', icon: Mail, link: SOCIALS.email, color: 'hover:text-red-400 hover:bg-red-400/10' },
 ];
 
 export default function ContactApp() {
@@ -23,7 +31,7 @@ export default function ContactApp() {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl mx-auto justify-center">
-        {SOCIALS.map((social, idx) => (
+        {socialLinks.map((social, idx) => (
           <motion.a
             key={social.name}
             href={social.link}
@@ -36,7 +44,7 @@ export default function ContactApp() {
             className={`flex flex-col items-center justify-center gap-4 p-8 bg-white/[0.03] border border-white/[0.05] rounded-3xl transition-all duration-300 ${social.color} group shadow-2xl text-center`}
           >
             <div className="flex items-center justify-center p-4 rounded-2xl bg-white/5 group-hover:bg-transparent group-hover:scale-110 transition-all">
-              <social.icon size={32} strokeWidth={1.5} />
+              <social.icon size={32} />
             </div>
             <span className="text-sm font-bold tracking-widest uppercase opacity-40 group-hover:opacity-100 transition-opacity">{social.name}</span>
           </motion.a>
