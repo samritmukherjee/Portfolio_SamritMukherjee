@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Rnd } from 'react-rnd';
 import { useWindows } from '@/context/WindowContext';
 import { useOS } from '@/context/OSContext';
@@ -31,7 +31,7 @@ const WindowFrame = React.memo(({ window: win, children }: WindowFrameProps) => 
   const [isMobile, setIsMobile] = React.useState(false);
   const [isInteracting, setIsInteracting] = React.useState(false);
   const [isResizing, setIsResizing] = React.useState(false);
-  const [taskbarHeight, setTaskbarHeight] = React.useState(48); // Windows taskbar is 48px (h-12)
+  const [taskbarHeight] = React.useState(48); // Windows taskbar is 48px (h-12)
   
   // Local state for smooth interaction (Hybrid approach)
   const [localSize, setLocalSize] = React.useState({ width: win.size.width, height: win.size.height });
@@ -52,7 +52,7 @@ const WindowFrame = React.memo(({ window: win, children }: WindowFrameProps) => 
     }
   }, [win.size, win.position, isInteracting]);
 
-  const handleDrag = useCallback((e: any, d: any) => {
+  const handleDrag = useCallback((e: unknown, d: { x: number; y: number }) => {
     // Prevent window from overlapping taskbar (Windows: bottom 48px)
     const maxY = globalThis.window.innerHeight - taskbarHeight - 20; // Leave 20px margin
     const constrainedY = Math.min(d.y, maxY);
@@ -64,7 +64,7 @@ const WindowFrame = React.memo(({ window: win, children }: WindowFrameProps) => 
     focusWindow(win.id);
   }, [win.id, focusWindow]);
 
-  const handleDragStop = useCallback((e: any, d: any) => {
+  const handleDragStop = useCallback((e: unknown, d: { x: number; y: number }) => {
     setIsInteracting(false);
     if (!win.isMaximized) {
       // Prevent window from overlapping taskbar
@@ -74,7 +74,7 @@ const WindowFrame = React.memo(({ window: win, children }: WindowFrameProps) => 
     }
   }, [win.id, win.isMaximized, updateWindowPosition, taskbarHeight]);
 
-  const handleResize = useCallback((e: any, direction: any, ref: any, delta: any, position: any) => {
+  const handleResize = useCallback((e: unknown, direction: string, ref: HTMLElement, delta: { height: number; width: number }, position: { x: number; y: number }) => {
     setLocalSize({ width: ref.offsetWidth, height: ref.offsetHeight });
     setLocalPos(position);
     setIsResizing(true);
@@ -86,7 +86,7 @@ const WindowFrame = React.memo(({ window: win, children }: WindowFrameProps) => 
     focusWindow(win.id);
   }, [win.id, focusWindow]);
 
-  const handleResizeStop = useCallback((e: any, direction: any, ref: any, delta: any, position: any) => {
+  const handleResizeStop = useCallback((e: unknown, direction: string, ref: HTMLElement, delta: { height: number; width: number }, position: { x: number; y: number }) => {
     setIsInteracting(false);
     setIsResizing(false);
     if (!win.isMaximized) {

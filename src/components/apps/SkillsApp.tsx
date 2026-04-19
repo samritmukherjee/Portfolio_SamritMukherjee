@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Layout, Database, Terminal, Palette, Code, Globe, Cpu, Smartphone } from 'lucide-react';
+import { Layout, Database, Terminal, Palette } from 'lucide-react';
 
 const skillCategories = [
   {
@@ -53,7 +53,7 @@ export default function SkillsApp() {
               </div>
               
               <div className="flex flex-wrap gap-2.5">
-                {category.skills.map((skill, idx) => (
+                {category.skills.map((skill) => (
                   <motion.span
                     key={skill}
                     whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.08)' }}

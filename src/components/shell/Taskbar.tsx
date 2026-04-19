@@ -5,7 +5,7 @@ import { useOS } from '@/context/OSContext';
 import { useWindows } from '@/context/WindowContext';
 import { APPS } from '@/constants';
 import * as Icons from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import StartMenu from './StartMenu';
 
 export default function Taskbar() {
@@ -47,7 +47,7 @@ export default function Taskbar() {
       {/* Centered App Icons */}
       <div className="flex items-center gap-0.5 absolute left-1/2 -translate-x-1/2 h-full py-1">
         {APPS.map((app) => {
-          const Icon = Icons[app.icon as keyof typeof Icons] as any;
+          const Icon = Icons[app.icon as keyof typeof Icons] as React.ElementType;
           const isOpen = windows.some(w => w.appId === app.id);
           const isActive = windows.find(w => w.appId === app.id)?.id === activeWindowId;
 

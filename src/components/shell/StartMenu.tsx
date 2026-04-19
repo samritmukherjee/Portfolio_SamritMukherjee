@@ -40,7 +40,7 @@ export default function StartMenu({ onClose }: { onClose: () => void }) {
 
         <div className="grid grid-cols-6 gap-x-2 gap-y-10 flex-1 overflow-y-auto px-2 pb-8 custom-scrollbar">
           {APPS.map((app) => {
-            const Icon = Icons[app.icon as keyof typeof Icons] as any;
+            const Icon = Icons[app.icon as keyof typeof Icons] as React.ElementType;
             return (
               <button
                 key={app.id}

@@ -9,7 +9,7 @@ import * as Icons from 'lucide-react';
 
 export default function MobileShell() {
   const { mobileOS, toggleMobileOS } = useOS();
-  const { openWindow, windows } = useWindows();
+  const { openWindow } = useWindows();
   const [time, setTime] = React.useState(new Date());
 
   React.useEffect(() => {
@@ -52,7 +52,7 @@ export default function MobileShell() {
       <div className="flex-1 px-8 pt-12 overflow-y-auto z-40 custom-scrollbar">
         <div className="grid grid-cols-4 gap-y-12 gap-x-8">
           {APPS.map((app, idx) => {
-            const Icon = Icons[app.icon as keyof typeof Icons] as any;
+            const Icon = Icons[app.icon as keyof typeof Icons] as React.ElementType;
             return (
               <motion.button
                 key={app.id}

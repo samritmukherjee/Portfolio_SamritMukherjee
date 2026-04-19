@@ -34,7 +34,7 @@ export default function Dock() {
               className="relative group cursor-pointer flex flex-col items-center"
             >
               <div className="w-14 h-14 flex items-center justify-center bg-gradient-to-b from-white/10 to-transparent rounded-[14px] border border-white/20 text-white shadow-xl transition-all duration-300 group-hover:border-white/40 group-hover:shadow-blue-500/10 group-active:scale-90">
-                {IconComponent && React.createElement(IconComponent as any, { 
+                {IconComponent && React.createElement(IconComponent as React.ElementType, { 
                     size: 28, 
                     strokeWidth: 1.5,
                     className: "group-hover:text-blue-400 transition-colors"

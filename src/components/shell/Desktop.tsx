@@ -12,8 +12,8 @@ import MobileShell from './MobileShell';
 import BootScreen from './BootScreen';
 
 export default function Desktop() {
-  const { os, mobileOS, toggleOS } = useOS();
-  const { clearWindows, resetForNewOS } = useWindows();
+  const { os, mobileOS } = useOS();
+  const { resetForNewOS } = useWindows();
   const [isMobile, setIsMobile] = useState(false);
   const [isBooting, setIsBooting] = useState(true);
   const previousOSRef = useRef<string | null>(null);

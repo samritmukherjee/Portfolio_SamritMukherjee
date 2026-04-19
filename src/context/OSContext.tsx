@@ -11,10 +11,13 @@ export function OSProvider({ children }: { children: React.ReactNode }) {
   const [wallpaper, setWallpaper] = useState<string>('/wallpapers/macos-ventura.jpg');
 
   useEffect(() => {
-    const savedOS = localStorage.getItem('samrit-os-pref') as OSType;
-    const savedMobileOS = localStorage.getItem('samrit-mobile-os-pref') as MobileOSType;
-    if (savedOS) setOs(savedOS);
-    if (savedMobileOS) setMobileOS(savedMobileOS);
+    const handleMount = async () => {
+      const savedOS = localStorage.getItem('samrit-os-pref') as OSType;
+      const savedMobileOS = localStorage.getItem('samrit-mobile-os-pref') as MobileOSType;
+      if (savedOS) setOs(savedOS);
+      if (savedMobileOS) setMobileOS(savedMobileOS);
+    };
+    handleMount();
   }, []);
 
   const toggleOS = () => {

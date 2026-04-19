@@ -26,7 +26,7 @@ export default function ContactApp() {
         animate={{ y: 0, opacity: 1 }}
         className="text-center space-y-4"
       >
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent">Let's Connect</h1>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent">Let&apos;s Connect</h1>
         <p className="text-white/50 text-lg max-w-xl mx-auto">Open for collaborations, interesting projects, and internship opportunities. Reach out through any of these channels.</p>
       </motion.div>
 

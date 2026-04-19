@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -10,7 +10,7 @@ interface BootScreenProps {
 }
 
 // macOS Boot Screen
-const MacOSBoot = ({ progress, onFinish }: { progress: number; onFinish: () => void }) => (
+const MacOSBoot = () => (
   <div className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center select-none overflow-hidden">
     {/* Main content */}
     <motion.div
@@ -61,7 +61,7 @@ const MacOSBoot = ({ progress, onFinish }: { progress: number; onFinish: () => v
       <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
         <motion.div
           className="h-full bg-white"
-          style={{ width: `${progress}%` }}
+          style={{ width: '0%' }}
           transition={{ ease: "linear" }}
         />
       </div>
@@ -70,7 +70,7 @@ const MacOSBoot = ({ progress, onFinish }: { progress: number; onFinish: () => v
 );
 
 // Windows Boot Screen
-const WindowsBoot = ({ progress, onFinish }: { progress: number; onFinish: () => void }) => (
+const WindowsBoot = () => (
   <div className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center select-none overflow-hidden">
     {/* Main content */}
     <motion.div
@@ -154,30 +154,14 @@ const WindowsBoot = ({ progress, onFinish }: { progress: number; onFinish: () =>
 );
 
 export default function BootScreen({ onFinish, os }: BootScreenProps) {
-  const [progress, setProgress] = useState(0);
-
   useEffect(() => {
-    const duration = 2800; // 2.8 seconds
-    const interval = 30;
-    const stepIncrement = 100 / (duration / interval);
-    
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          setTimeout(onFinish, 400);
-          return 100;
-        }
-        return prev + stepIncrement;
-      });
-    }, interval);
-
-    return () => clearInterval(timer);
+    const timer = setTimeout(onFinish, 2800); // 2.8 seconds boot duration
+    return () => clearTimeout(timer);
   }, [onFinish]);
 
   return os === 'macos' ? (
-    <MacOSBoot progress={progress} onFinish={onFinish} />
+    <MacOSBoot />
   ) : (
-    <WindowsBoot progress={progress} onFinish={onFinish} />
+    <WindowsBoot />
   );
 }
