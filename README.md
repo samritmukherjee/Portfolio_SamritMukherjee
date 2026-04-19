@@ -1,5 +1,4 @@
 # 🖥️ SAMRIT OS
-
 > **A portfolio experience that's actually an operating system**
 
 You don't visit SAMRIT OS. You *boot* it. 
@@ -109,3 +108,5 @@ The foundation is solid. The vision is clear. Future enhancements will push this
 **Built with ambition, coffee, and an irrational commitment to making portfolios interesting.**
 
 *Boot into something different. Boot into SAMRIT OS.*
+
+*MADE BY SAMRIT*
